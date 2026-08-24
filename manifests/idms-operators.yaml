@@ -1,0 +1,53 @@
+# ImageDigestMirrorSet — Operator/base-image content mirroring.
+#
+# Mirrors the same set of source repositories that were found on cluster #1
+# in the legacy ICSP `operator-<timestamp>`. Adjust the list to match what
+# `oc get imagecontentsourcepolicy -o yaml` (Gate 3) actually shows on
+# cluster #2 — do not assume this exact list is complete or correct there.
+#
+# Apply with:
+#   oc apply -f manifests/idms-operators.yaml
+apiVersion: config.openshift.io/v1
+kind: ImageDigestMirrorSet
+metadata:
+  name: operator-images
+spec:
+  imageDigestMirrors:
+    - source: registry.redhat.io/container-native-virtualization
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/container-native-virtualization" ]
+    - source: registry.redhat.io/ubi9
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/ubi9" ]
+    - source: registry.redhat.io/rhceph
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/rhceph" ]
+    - source: registry.redhat.io/migration-toolkit-virtualization
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/migration-toolkit-virtualization" ]
+    - source: registry.redhat.io/source-to-image
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/source-to-image" ]
+    - source: registry.redhat.io/openshift4
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/openshift4" ]
+    - source: registry.redhat.io/multicluster-engine
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/multicluster-engine" ]
+    - source: registry.redhat.io/gatekeeper
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/gatekeeper" ]
+    - source: registry.redhat.io/rh-sso-7
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/rh-sso-7" ]
+    - source: registry.redhat.io/openshift-pipelines
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/openshift-pipelines" ]
+    - source: registry.redhat.io/rhacm2
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/rhacm2" ]
+    - source: registry.redhat.io/rhel9
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/rhel9" ]
+    - source: registry.redhat.io/openshift-gitops-1
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/openshift-gitops-1" ]
+    - source: registry.redhat.io/workload-availability
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/workload-availability" ]
+    - source: registry.redhat.io/rhel8
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/rhel8" ]
+    - source: registry.redhat.io/odf4
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/odf4" ]
+    - source: registry.redhat.io/compliance
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/compliance" ]
+    - source: registry.redhat.io/lvms4
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/lvms4" ]
+    - source: registry.redhat.io/openshift-serverless-1
+      mirrors: [ "<MIRROR_HOST>:<MIRROR_PORT>/openshift-serverless-1" ]

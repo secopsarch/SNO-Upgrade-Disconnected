@@ -1,0 +1,18 @@
+# ImageTagMirrorSet — use only for repositories you must resolve by tag
+# rather than digest (uncommon for release/operator content, which should
+# be digest-pinned; more common for convenience/tooling images pulled by
+# tag by a Job or a manually-run pod).
+#
+# Most disconnected OpenShift workflows do NOT need an ITMS — the release
+# payload and OLM bundles/catalogs are already digest-based. Only add this
+# if something in your environment genuinely pulls by tag from one of the
+# mirrored source repositories.
+apiVersion: config.openshift.io/v1
+kind: ImageTagMirrorSet
+metadata:
+  name: example-tag-mirrors
+spec:
+  imageTagMirrors:
+    - source: registry.redhat.io/openshift4/ose-cli
+      mirrors:
+        - <MIRROR_HOST>:<MIRROR_PORT>/openshift4/ose-cli

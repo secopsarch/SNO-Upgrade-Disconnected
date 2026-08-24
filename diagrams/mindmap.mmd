@@ -1,0 +1,46 @@
+mindmap
+  root((Disconnected SNO 4.18 Upgrade))
+    Constraints
+      No internet egress
+      Single node = control-plane + worker
+      Payload is an ordered DAG
+      Digests, not tags
+      Cincinnati graph decides valid hops
+      SNO etcd restore is limited
+    Trust
+      OpenShift cluster trust (additionalTrustedCA)
+      Registry host trust (Podman / containers/certs.d)
+      TLS chain validation
+    Mirror
+      ICSP (legacy, still supported)
+      IDMS / ITMS (recommended)
+      oc-mirror v2 workflow
+      Digest-level content validation
+      Registry storage capacity
+    Update graph
+      Channel selection (stable-4.18)
+      RetrievedUpdates condition
+      Recommended vs conditional updates
+      Never hard-code a target version
+    Operators
+      MetalLB Operator
+      LVM Storage Operator
+      CatalogSource / OLM
+      Channel compatibility with target OCP
+    Execution
+      Baseline health gate
+      Monitoring layout
+      Expected automation (cordon/drain/reboot)
+      Stall recognition
+    Failure modes
+      Cert/trust failure
+      Missing mirrored image
+      Operator incompatibility
+      Node reboot exceeds window
+      Storage exhaustion
+    Validation
+      ClusterVersion Completed
+      ClusterOperators healthy
+      MCP updated
+      Operators Succeeded
+      Post-upgrade backup

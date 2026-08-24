@@ -1,0 +1,14 @@
+# Update image pullspec to your mirrored catalog index.
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: gls-catalog-cs
+  namespace: openshift-marketplace
+spec:
+  displayName: GLS Operator Catalog Cs
+  publisher: GLS
+  sourceType: grpc
+  image: registry.ocp4.example.com:8443/redhat/redhat-operator-index:v4.18
+  updateStrategy:
+    registryPoll:
+      interval: 30m

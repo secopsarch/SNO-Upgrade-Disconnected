@@ -1,0 +1,30 @@
+# Template for the cluster-trust ConfigMap for the disconnected mirror
+# registry. On cluster #1 this already existed as `registry-config` in
+# `openshift-config` with the key naming convention
+# `<host>..<port>` (dots kept, colon replaced with two dots) -- e.g.
+# `registry.ocp4.example.com..8443`. Do NOT rename that key; OpenShift's
+# image config controller expects exactly this convention when the
+# registry uses a non-standard port.
+#
+# In practice you will almost always generate this with `oc create
+# configmap --from-file=` rather than hand-writing the PEM into YAML:
+#
+#   oc create configmap registry-config \
+#     -n openshift-config \
+#     --from-file=<MIRROR_HOST>..<MIRROR_PORT>=registry-ca-bundle.pem \
+#     --dry-run=client -o yaml > manifests/registry-ca-configmap.generated.yaml
+#
+# This file is kept as a structural reference / fallback only.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-config
+  namespace: openshift-config
+data:
+  <MIRROR_HOST>..<MIRROR_PORT>: |
+    -----BEGIN CERTIFICATE-----
+    <intermediate CA certificate PEM>
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    <root CA certificate PEM>
+    -----END CERTIFICATE-----

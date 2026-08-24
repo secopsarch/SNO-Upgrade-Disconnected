@@ -1,0 +1,28 @@
+# CatalogSource — points OLM at the mirrored operator index.
+#
+# Use this only if oc-mirror generated a NEW index image reference (e.g. the
+# index tag changed to match the target OpenShift version) and the existing
+# CatalogSource needs to be repointed. If oc-mirror only added digests to
+# the existing index tag, no change may be required — confirm first with:
+#
+#   oc get catalogsource -n openshift-marketplace gls-catalog-cs -o yaml
+#
+# Apply with:
+#   oc apply -f manifests/catalogsource-patch.yaml
+#
+# Then verify:
+#   oc get pods -n openshift-marketplace -l olm.catalogSource=gls-catalog-cs
+#   oc get packagemanifest -n openshift-marketplace | grep -E 'metallb|lvms'
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: gls-catalog-cs
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: <MIRROR_HOST>:<MIRROR_PORT>/redhat/redhat-operator-index:<TARGET_INDEX_TAG>
+  displayName: GLS Operator Catalog
+  publisher: Cs
+  updateStrategy:
+    registryPoll:
+      interval: 30m

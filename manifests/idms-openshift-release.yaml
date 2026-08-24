@@ -1,0 +1,32 @@
+# ImageDigestMirrorSet — OpenShift release payload mirroring.
+#
+# This is the *modern* replacement for the legacy ICSP objects
+# `image-policy` and `release-<timestamp>` seen on cluster #1. Existing
+# ICSPs continue to work in 4.18 and do NOT need to be removed just to
+# apply this — but do not run both an ICSP and an IDMS that disagree on the
+# same source repository. Reconcile Gate 3 of the pre-upgrade checklist
+# before applying this file.
+#
+# Replace <MIRROR_HOST> and <MIRROR_PORT> with the values discovered for
+# cluster #2 (do not assume they match cluster #1).
+#
+# Apply with:
+#   oc apply -f manifests/idms-openshift-release.yaml
+#
+# Validate with:
+#   oc get imagedigestmirrorset openshift-release -o yaml
+#   oc debug node/<node> -- chroot /host cat /etc/containers/registries.conf
+apiVersion: config.openshift.io/v1
+kind: ImageDigestMirrorSet
+metadata:
+  name: openshift-release
+spec:
+  imageDigestMirrors:
+    - source: quay.io/openshift-release-dev/ocp-release
+      mirrorSourcePolicy: AllowContactingSource
+      mirrors:
+        - <MIRROR_HOST>:<MIRROR_PORT>/openshift/release-images
+    - source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+      mirrorSourcePolicy: AllowContactingSource
+      mirrors:
+        - <MIRROR_HOST>:<MIRROR_PORT>/openshift/release

@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant CVO as Cluster Version Operator
+    participant KUBE as kubelet / CRI-O (node)
+    participant MIRROR as Mirror (Quay)
+    participant PUB as quay.io (public, unreachable)
+
+    CVO->>KUBE: Apply Deployment referencing image@sha256:<digest>
+    KUBE->>MIRROR: Pull <mapped-repo>@sha256:<digest>
+    alt Digest present in mirror
+        MIRROR-->>KUBE: 200 OK (manifest + blobs)
+        KUBE-->>CVO: Container starts, Deployment becomes Available
+        CVO->>CVO: Advance to next payload resource (N+1 of M)
+    else Digest missing in mirror
+        MIRROR-->>KUBE: 404 manifest unknown
+        KUBE->>PUB: Fallback attempt to public registry
+        PUB-->>KUBE: 401 unauthorized (disconnected cluster)
+        KUBE-->>CVO: Init:ImagePullBackOff (retries with backoff)
+        CVO->>CVO: "Unable to apply <ver>: workload not rolled out"
+        Note over CVO,MIRROR: Operator mirrors the missing digest (Gate 5a)
+        MIRROR-->>MIRROR: oc-mirror pushes exact digest content
+        KUBE->>MIRROR: Retry pull (backoff timer or forced by pod delete)
+        MIRROR-->>KUBE: 200 OK
+        KUBE-->>CVO: Deployment becomes Available, rollout resumes
+    end

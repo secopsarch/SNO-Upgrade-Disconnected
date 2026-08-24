@@ -1,0 +1,14 @@
+# Modern alternative to ICSP for new configurations (OCP 4.13+).
+# Prefer for greenfield; do not casually mix with conflicting ICSP during upgrade.
+apiVersion: config.openshift.io/v1
+kind: ImageDigestMirrorSet
+metadata:
+  name: release-idms
+spec:
+  imageDigestMirrors:
+    - source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release
+    - source: quay.io/openshift-release-dev/ocp-release
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release-images

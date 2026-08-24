@@ -1,0 +1,34 @@
+# oc-mirror v2 ImageSetConfiguration — Operator catalog content
+# (MetalLB Operator + LVM Storage Operator, matching the two subscriptions
+# found on cluster #1: metallb-system/metallb-operator and
+# openshift-storage/lvms-operator, both served from CatalogSource
+# `gls-catalog-cs`).
+#
+# Discover the exact catalog image reference on cluster #2 first:
+#   oc get catalogsource -A -o jsonpath='{range .items[*]}{.metadata.name}{"  "}{.spec.image}{"\n"}{end}'
+#
+# Then replace <CATALOG_INDEX_IMAGE> below (this was
+# `registry.ocp4.example.com:8443/redhat/redhat-operator-index:v4.18` on
+# cluster #1 — do not assume the same tag/version is correct for cluster #2;
+# it must match (or be compatible with) the target OpenShift version from
+# Gate 4/Gate 6).
+#
+# Usage mirrors manifests/imagesetconfig-release.yaml (mirror-to-mirror or
+# mirror-to-disk/disk-to-mirror), pointed at the same or a separate
+# workspace directory.
+apiVersion: mirror.openshift.io/v2alpha1
+kind: ImageSetConfiguration
+mirror:
+  operators:
+    - catalog: <CATALOG_INDEX_IMAGE>   # e.g. registry.ocp4.example.com:8443/redhat/redhat-operator-index:v4.18
+      packages:
+        - name: metallb-operator
+          channels:
+            - name: stable
+        - name: lvms-operator
+          channels:
+            - name: stable-4.18
+  additionalImages:
+    # Add any base/UBI images your operators' bundles reference directly
+    # and that are not already pulled in transitively by the catalog.
+    - name: registry.redhat.io/ubi9/ubi:latest

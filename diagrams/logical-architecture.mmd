@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph WS[Workstation]
+      OC[oc / oc-mirror / skopeo]
+    end
+    subgraph SNO[SNO Cluster - master01]
+      CVO[Cluster Version Operator]
+      KUBELET[kubelet / CRI-O]
+      MIRRORCFG["/etc/containers/registries.conf\n(rendered from ICSP/IDMS/ITMS)"]
+      CVO --> KUBELET
+      KUBELET --> MIRRORCFG
+    end
+    subgraph REGHOST[Registry Host]
+      NGINX[nginx :8443]
+      QUAY[Quay 3.8.x]
+      STORAGE[(Quay blob storage\nsha256/ tree)]
+      CERTSD["/etc/containers/certs.d/<host>:8443/ca.crt"]
+      CATRUST["/etc/pki/ca-trust (system trust)"]
+      NGINX --> QUAY
+      QUAY --> STORAGE
+    end
+    UPSTREAM["quay.io / registry.redhat.io\n(unreachable from cluster nodes)"]
+
+    OC -- "podman/skopeo login,\noc-mirror push" --> NGINX
+    MIRRORCFG -- "pull-from-mirror = digest-only" --> NGINX
+    KUBELET -. "direct pull attempt\n(fails: unauthorized, disconnected)" .-> UPSTREAM
+    OC -. "reference source images\n(only reachable when\nstaging the mirror)" .-> UPSTREAM
+    CERTSD -.-> NGINX
+    CATRUST -.-> NGINX

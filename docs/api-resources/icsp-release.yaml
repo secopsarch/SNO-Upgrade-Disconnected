@@ -1,0 +1,27 @@
+# Align mirror repository paths with your Quay layout / oc adm release mirror --to flags.
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: release-mirror
+spec:
+  repositoryDigestMirrors:
+    - source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release
+    - source: quay.io/openshift-release-dev/ocp-release
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release-images
+---
+# Optional companion matching older labs that also map ocp-release → openshift/release
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: image-policy
+spec:
+  repositoryDigestMirrors:
+    - source: quay.io/openshift-release-dev/ocp-release
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release
+    - source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift/release

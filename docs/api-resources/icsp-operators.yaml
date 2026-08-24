@@ -1,0 +1,24 @@
+# Trim to organizations you actually mirror. Extra entries are harmless if unused.
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: operator-mirror
+  labels:
+    operators.openshift.org/catalog: "true"
+spec:
+  repositoryDigestMirrors:
+    - source: registry.redhat.io/lvms4
+      mirrors:
+        - registry.ocp4.example.com:8443/lvms4
+    - source: registry.redhat.io/openshift4
+      mirrors:
+        - registry.ocp4.example.com:8443/openshift4
+    - source: registry.redhat.io/ubi9
+      mirrors:
+        - registry.ocp4.example.com:8443/ubi9
+    - source: registry.redhat.io/rhel9
+      mirrors:
+        - registry.ocp4.example.com:8443/rhel9
+    - source: registry.redhat.io/rhel8
+      mirrors:
+        - registry.ocp4.example.com:8443/rhel8

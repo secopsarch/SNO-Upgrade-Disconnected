@@ -1,0 +1,17 @@
+# Patch for image.config.openshift.io/cluster to reference the CA
+# ConfigMap above. Confirm this is already set (it was on cluster #1)
+# before applying — re-applying an identical value is harmless, but review
+# first with:
+#
+#   oc get image.config.openshift.io/cluster -o yaml
+#
+# Apply with:
+#   oc patch image.config.openshift.io/cluster --type=merge \
+#     -p "$(cat manifests/image-cluster-additionalTrustedCA-patch.yaml)"
+apiVersion: config.openshift.io/v1
+kind: Image
+metadata:
+  name: cluster
+spec:
+  additionalTrustedCA:
+    name: registry-config

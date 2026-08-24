@@ -1,0 +1,36 @@
+flowchart TD
+    A[Start: Cluster #2 identified for upgrade] --> B{Gate 0-1\nAccess + Baseline healthy?}
+    B -- No --> B1[Fix baseline issues\nDo not proceed]
+    B1 --> B
+    B -- Yes --> C{Gate 2\nRegistry/Podman trust OK?}
+    C -- No --> C1[Extract CA from registry-config\nInstall in ca-trust + certs.d]
+    C1 --> C
+    C -- Yes --> D{Gate 3\nMirror config inventoried?}
+    D -- No --> D1[oc get icsp/idms/itms -o yaml\nDecide ICSP-vs-IDMS strategy]
+    D1 --> D
+    D -- Yes --> E{Gate 4\nChannel set + graph retrieved?}
+    E -- No --> E1[Patch spec.channel\nWait RetrievedUpdates=True]
+    E1 --> E
+    E -- Yes --> F{Gate 5\nMirror content matches\ntarget digest set?}
+    F -- No --> F1[Gate 5a: oc-mirror v2\nmirror target release + operators]
+    F1 --> F
+    F -- Yes --> G{Gate 6\nOperators compatible\nwith target OCP?}
+    G -- No --> G1[Update operator channel /\naccept documented gap / hold]
+    G1 --> G
+    G -- Yes --> H{Gate 7\nFresh etcd backup taken?}
+    H -- No --> H1[Run cluster-backup.sh\nCopy off-node]
+    H1 --> H
+    H -- Yes --> I[Open 5-pane monitoring layout]
+    I --> J[oc adm upgrade --to=<graph-recommended-version>]
+    J --> K{Progressing normally?}
+    K -- Yes --> L{Reached target,\nAvailable/!Progressing/!Degraded?}
+    K -- No / stalled --> M[Troubleshooting Guide\nSection 3 decision tree]
+    M --> N{Root cause = missing\nmirrored image?}
+    N -- Yes --> O[Mirror missing digest\nvia oc-mirror, let CVO resume]
+    O --> K
+    N -- No --> P[Follow matching playbook\nin Troubleshooting Guide]
+    P --> K
+    L -- No --> M
+    L -- Yes --> Q[Post-Upgrade Validation\nCategories A-E]
+    Q --> R[Sign-off + archive\nmirror inventory + backups]
+    R --> S[Done]
