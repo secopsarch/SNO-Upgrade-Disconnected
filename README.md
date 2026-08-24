@@ -1,6 +1,6 @@
 # Disconnected OpenShift SNO Upgrade — SOP & Runbook Toolkit
 
-This repository documents, as a blind-followable Standard Operating Procedure
+This repository documents, a Standard Operating Procedure
 (SOP), a real disconnected **Single Node OpenShift (SNO) 4.18.6 → 4.18.52/53**
 upgrade that stalled because the local Quay mirror registry did not yet
 contain the target release's images (`Init:ImagePullBackOff` /
